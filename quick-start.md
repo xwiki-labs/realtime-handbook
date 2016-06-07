@@ -113,6 +113,9 @@ When you visit your web page, this module will be loaded by the script tag:
 You can specify other modules as dependencies where it says `/* DEPENDENCIES */`.
 They will be loaded and provided to your main program where it says `/* MODULES */`.
 
+As you add to your script, you may want to reload your page and see what difference your changes have made.
+Ideally you should have your console open so you notice if there are errors.
+
 Let's start with dependencies...
 
 ```
@@ -182,3 +185,76 @@ In most cases users will want to be able to join distinct channels, and invite f
 As an app author you'll need to choose a User Interface that works for your goals.
 You can prompt users to enter a channel and password, or infer both by parsing the [fragment identifier](https://en.wikipedia.org/wiki/Fragment_identifier) from the page's URL, as is done in [Cryptpad](https://cryptpad.fr).
 
+Next you'll want to figure out what should happen when the object is updated.
+In our case, we want to update the page to display a list of all the users who have visited the page.
+
+We can make a function that takes an array and updates the DOM, then hook it into the object after.
+
+```
+    var $userList = $('#visitors');
+
+    var render = function (visitors) {
+        $userList.text(visitors
+            .map(function (name) {
+                return '* ' + name;
+            }).join('\n'));
+    };
+```
+
+Now you just need to hook that into your realtime object.
+It takes a little time for your object to download and reconstruct the history of changes.
+
+It's best to wait until you've received the latest changes before making further modifications to the object.
+You can do that by adding an 'onready' callback to the object.
+
+```
+    var proxy = rt.proxy.on('ready', function () {
+        console.log('ready!');
+
+        // now that the object is ready, listen for further changes
+        proxy.on('change', ['guestBook'], function (oldValue, newvalue, path) {
+            console.log("A new user (%s) signed the guestbook", newValue);
+            render(proxy.guestBook);
+        }).on('disconnect', function () {
+            // if the user loses their connection, inform them
+            window.alert('Network connection lost!');
+        });
+
+        // initialize the guestbook, if it isn't already there
+        if (!proxy.guestBook) { proxy.guestBook = []; }
+
+        // do a little validation on your input, and
+
+        if (typeof userName !== 'string') {
+            render(proxy.guestBook);
+            return;
+        }
+
+        userName = userName.trim();
+        // add your name to the guestBook, if it isn't already there
+        if (userName && proxy.guestBook.indexOf(userName) === -1) {
+            proxy.guestBook.push(userName);
+        }
+
+        // display the current list (with your name)
+        render(proxy.guestBook);
+    });
+```
+
+And that's that!
+
+Try visiting your page with two separate windows open.
+Sign the guestbook with the first, then with the second, and watch as the first page updates to reflect the second page's changes are reflected through the content.
+
+Realtime apps can be much more complicated, but that's a basic start.
+
+To recap:
+
+1. Launch your server
+2. write some HTML that loads a main javascript file
+3. create a main javascript file that loads dependencies
+4. define functions to handle realtime events
+5. create a realtime session and attach your functions to it
+
+Before modifying your code any more, it's recommended that you back it up.
+Then you can freely add and remove code to see what effect it has on your app's behaviour.
