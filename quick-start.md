@@ -2,34 +2,85 @@
 
 Developing a [Collaborative Real Time Editor](https://en.wikipedia.org/wiki/Collaborative_real-time_editor) is easier than ever!
 
-[XWiki Labs](http://labs.xwiki.com/) has been busy creating a number of libraries that you can use to build clientside applications that utilize this server:
+You can find a list of useful repositories [here](./REPOSITORIES.md).
 
-* [chainpad](https://github.com/xwiki-contrib/chainpad)
-  - Realtime Collaborative Editor Algorithm based on Nakamoto Blockchains
-* [chainpad-crypto](https://github.com/xwiki-labs/chainpad-crypto)
-  - pluggable cryptography module for chainpad
-* [chainpad-json-validator](https://github.com/xwiki-labs/chainpad-json-validator)
-  - pluggable operational transform function for JSON in chainpad
-* [chainpad-netflux](https://github.com/xwiki-labs/chainpad-netflux)
-  - A convenient wrapper around the chainpad realtime engine and the netflux transport API
-* [chainpad-listmap](https://github.com/xwiki-labs/chainpad-listmap)
-  - collaborative json arrays and objects
+We're going to use some of them to produce a basic appliation that will familiarize you with the basics of writing software for real time collaboration.
 
-Most of these modules use [Require.js](http://requirejs.org/).
+This guide assumes you're using some kind of Unix-like operating system, Mac OSX or Linux-based distributions ought to work without problems.
+Windows users may have to adapt instructions.
+
+Let's get started!
+
+### Setting up your Server
+
+We'll be using **Chainpad-Server** as a back end for our app.
+
+To get your server running, follow the [installation guide](https://github.com/xwiki-labs/chainpad-server#installation), and then launch your server using `node server.js`.
+
+### Writing your App
+
+We're going to build a **Realtime Guestbook**.
+When somebody visits the page, they'll be prompted to input their name.
+Once they've entered their name, it will be added to a list a of visitors.
+
+The twist for this simple app is that the list of visitors is actually a realtime datastructure.
+When a new visitor modifies the datastructure, other users' pages will update to reflect their changes.
 
 If you look inside your server's `www/` directory, you'll find a `template/` directory, which contains two files:
 
 * `index.html`
 * `main.js`
 
-`template` is actually a really simple realtime "guestbook" app.
-You can open it [http://localhost:3000/template](http://localhost:3000/template) in two browser windows, and enter your name into the prompt.
+Our application will use this same structure.
 
-Once you've entered your name in one window, you should see your name on a list of people who have visited the page.
 
-In the second window, you can enter a new name.
-After hitting _OK_, you should see the new name appended to the list of visitors.
+```BASH
+# Navigate into the www/ directory, if you aren't already there
+cd ./www/;
 
-## Making Your Own Realtime Application
+# Create a folder for your app
+mkdir guestbook;
+
+# Navigate into your new folder
+cd guestbook;
+```
+
+Your next step is to create some basic HTML that you can view in your browser.
+
+Using your favourite text editor, Open `index.html`, paste the following code into it, and save.
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <style>
+        html, body{
+            padding: 0px;
+            margin: 0px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        pre {
+            font-size:30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guestbook</h1>
+    <h2>This page has been visited by:</h2>
+    <pre id="visitors"></pre>
+
+</body>
+</html>
+```
+
+Assuming you're using the default configuration for your server, you should now be able to visit http://localhost:3001/guestbook/.
+
+It should look something like this:
+
+![](./assets/guestbook-initial.png)
 
 
