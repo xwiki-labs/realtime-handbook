@@ -51,7 +51,7 @@ Your next step is to create some basic HTML that you can view in your browser.
 
 Using your favourite text editor, Open `index.html`, paste the following code into it, and save.
 
-```
+```HTML
 <!DOCTYPE html>
 <html>
 <head>
@@ -95,7 +95,7 @@ The rest of our example app will consist entirely of Javascript, in a single fil
 
 Once again, open up your favourite text editor and paste the following template into `main.js`:
 
-```
+```javascript
 define([
     /* DEPENDENCIES */
 ], function (/* MODULES */) {
@@ -118,7 +118,7 @@ Ideally you should have your console open so you notice if there are errors.
 
 Let's start with dependencies...
 
-```
+```javascript
 define([
 
     /*  our server provides a configuration API, from which we can determine
@@ -150,7 +150,7 @@ The rest of our application's code will go in the function body located below th
 To start, we want to prompt our users to provide their name.
 We'll assign their input to the variable `userName`:
 
-```
+```javascript
 ], function (Config, Listmap, Crypto) {
     var userName = window.prompt("What is your name?");
 ```
@@ -165,7 +165,7 @@ We need to specify a few configuration variables:
 * an object of the type we'd like to use to collaborate
 * our encryption module, which will encrypt messages before sending them to the server, and decrypt them when new messages are received
 
-```
+```javascript
     var rt = Listmap.create({
         websocketURL: Config.websocketURL,
         channel: "b87dff2e9a465f0e0ae36453d19b087c",
@@ -190,7 +190,7 @@ In our case, we want to update the page to display a list of all the users who h
 
 We can make a function that takes an array and updates the DOM, then hook it into the object after.
 
-```
+```javascript
     var $userList = $('#visitors');
 
     var render = function (visitors) {
@@ -207,7 +207,7 @@ It takes a little time for your object to download and reconstruct the history o
 It's best to wait until you've received the latest changes before making further modifications to the object.
 You can do that by adding an 'onready' callback to the object.
 
-```
+```javascript
     var proxy = rt.proxy.on('ready', function () {
         console.log('ready!');
 
