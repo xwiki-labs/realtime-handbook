@@ -258,3 +258,5 @@ To recap:
 
 Before modifying your code any more, it's recommended that you back it up.
 Then you can freely add and remove code to see what effect it has on your app's behaviour.
+
+The complete source for the realtime-guestbook app is available [here](./examples/guestbook/).
