@@ -62,10 +62,14 @@ Using your favourite text editor, Open `index.html`, paste the following code in
             margin: 0px;
             overflow: hidden;
             box-sizing: border-box;
+            background-color: #e1e1e1;
         }
-        pre {
-            font-size:30px;
+        body {
+            width: 50vw;
+            margin: auto;
         }
+        h1, h2 { text-align: center; }
+        pre { font-size:30px; }
     </style>
 </head>
 <body>
