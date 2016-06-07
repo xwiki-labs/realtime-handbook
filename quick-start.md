@@ -127,7 +127,7 @@ define([
 
     /*  provide some cryptographic functions so that we can 
         pass information through the server without it being readable */
-    '/bower_components/chainpad-crypto/stub.js', //crypto.js',
+    '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/jquery/dist/jquery.min.js',
 
 /*  the modules we've specified will be passed to our main routine as
@@ -136,6 +136,49 @@ define([
     We don't need to do anything with jQuery, as it's loaded into
     the global scope as `$` */
 ], function (Config, Listmap, Crypto) {
+    /* MAIN ROUTINE */
+
+});
 ```
 
+Now we can work on the main routine.
+The rest of our application's code will go in the function body located below the dependencies:
+
+To start, we want to prompt our users to provide their name.
+We'll assign their input to the variable `userName`:
+
+```
+], function (Config, Listmap, Crypto) {
+    var userName = window.prompt("What is your name?");
+```
+
+Next we want to create our realtime object.
+
+We need to specify a few configuration variables:
+
+* the URL of the websocket it will use to communicate with other peers
+* the channel id each peer will use to connect
+* the encryption key
+* an object of the type we'd like to use to collaborate
+* our encryption module, which will encrypt messages before sending them to the server, and decrypt them when new messages are received
+
+```
+    var rt = Listmap.create({
+        websocketURL: Config.websocketURL,
+        channel: "b87dff2e9a465f0e0ae36453d19b087c",
+        cryptKey:"sksyaHv+OOlQumRmZrQU4f5N",
+        data:{},
+        crypto: Crypto
+    });
+```
+
+Just like that, we have a realtime object.
+We can add properties to it, and our changes will be replicated to our peers.
+
+You may have noticed that we specified the channel and cryptKey as unchanging strings.
+This is because we want all users to visit the same guestbook.
+
+In most cases users will want to be able to join distinct channels, and invite friends or colleagues to join their channels.
+As an app author you'll need to choose a User Interface that works for your goals.
+You can prompt users to enter a channel and password, or infer both by parsing the [fragment identifier](https://en.wikipedia.org/wiki/Fragment_identifier) from the page's URL, as is done in [Cryptpad](https://cryptpad.fr).
 
